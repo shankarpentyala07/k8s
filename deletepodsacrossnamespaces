@@ -1,0 +1,13 @@
+#!/bin/bash
+while read -r line
+do
+#echo "$line"
+arr=( $line )
+echo "pod name : '${arr[1]}'"
+echo "ns name : '${arr[0]}'"
+echo "oc delete pod ${arr[1]} -n  ${arr[0]} --force --grace-period=0"
+oc delete pod ${arr[1]} -n  ${arr[0]} --force --grace-period=0
+done< <(oc get pods -A -o wide | grep worker0 | awk '{ print $1,$2}')
+
+
+#Please change the command on line 10 accordingly
