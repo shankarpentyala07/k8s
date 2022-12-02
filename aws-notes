@@ -1,0 +1,345 @@
+Route Table:
+One important property of a subnet is its route table.A route table contains a set of rules, called routes, that are used to determine where network traffic from your subnet or gateway is directed.Use a 
+public subnet for internet connected resources and private subnet for non-internet connected resources.
+
+Route tables will have rules for local traffic and public IP ranges if a gateway is attached.Note that AWS recommends that you specify a CIDR block from 
+the private IPv4 address ranges as specified in RFC 1918.
+
+The CIDR naming convention 0.0.0.0/0 represents all IPV4 adddresses(::/0 for IPv6)
+
+Route tables have a target: The gateway, network interface, or connection through which to send the destination traffic. Peering connectioons are one type
+of connection that can be used as a target.
+
+NAT Gateway:
+A NAT gateway is a Network Address Translation(NAT) service.You can use a NAT gateway so that instances in a private subnet can connect to services 
+outside your VPC but external services cannot initiate a connection with those instances.
+
+Internet Gateway:
+An internet gaateway serves two purposes: to provide a target in your VPC route tables for internet-routable traffic,and to perform network address
+translation(NAT) for instances that have been assigned public IPv4 addresses.
+
+An internet gateway supports IPv4 aand IPv6 traffic.it does not cause availability risks or bandwidth constraints on your network traffic.There's no
+additional charge for having an internet gateway in your account.
+
+To deploy a working internet gatewaty the following must be completed:
+- Attach the internet gateway to a VPC
+- Route tables associated with your public subnet must have a route to your internet gateway
+- Security groups associated with your VPC must allow traffic to/from the internet
+- Any instances in the VPC must have a public IP or Elastic IP address assigned
+
+Security Groups:
+For each security group, you add rules that control the traffic based on protocols and port numbers.There are separate sets of rules for ibound traffic
+and outbound traffic.
+
+When you create a VPC,it comes with a default security group.You can create additional security groups for each VPC
+
+You can create a security group and add rules that reflect the role of the instance that's associated with the security group.For example,an instance
+that's configured as a web server needs security group rules tat allow inbound HTTP and HTTPS access.Likewise, a database instance needs rules that allow
+access for the type of database, such as access over port 3306 for MySQL
+
+Security groups are stateful.For example,if you send a request from an instance,the response traffic for that request is allowed to reach the instance
+regardless of the inbound security group rules.Responses to allowed inbound traffic are allowed to leave the instance, regardless of the outbound rules.
+
+Security groups do not automatically accept data from peered Amazon VPCs.You must update security groups to allow your peered Amazon VPC as an incoming
+source.
+
+Security group rules are always permissive; you can't create rules that deny access. Security group rules enable you to filter traffic based on protocols 
+and port numbers.
+
+
+VPC:
+Amazon VPC is a service that lets you launch AWS resources in a logically isolate network that you define.
+You have complete control over yourr virtual networking environment
+
+Amazon VPC has a feature called VPC peering. By ddefault, Amazon VPCs are isolated from each other. A VPC peering connection is a networking connection
+b/w two Amazxon VPCs that enables you to route traffic between them using private IP adressesAfter you create a VPC peering connection between two 
+Amazon VPCs, you can route the trafficc between the VPCs
+using private IP addresses.Allow communication between applications hosted in different Amazon VPCs using VPC peering.
+
+The route tables for each VPC point to the relevant VPC peering connection to access the entire CIDR block of the peered VPC
+
+Note that peering is not transitive.Which means you can create a peering connection that is A to B or B to C, but just not A to C.
+VPC peering does not support transitive peering relationships or edge to edge routing.You can also peer with Amazon VPCs in different accounts.
+VPC peering supports peering between multiple accounts.
+
+To request a VPC peering connection with an Amazon VPC in your account,ensure that you have the IDs of the Amazon VPCs with whch you are creeating the VPC
+peering connection.You must both create and accept the VPC peering connection request yourself to acvtivate it.If the peering connection is across accounts,
+both accounts must accept the connection to activate it.
+
+After you establish a peering connection, you must modify the route table associated with each Amazon VPC.You must add a route into each route table to
+allow traffic to be routed to the peered Amazon VPC.
+
+Just because Amazon VPCCs are peered doesn't mean that all data is accepted.Security features such as network access control lists and security groups will
+still apply.Be sure to update them accordingly.
+
+
+
+Connecting to an Ec2 Instance:
+There are four ways to connect into an Amazon EC2 instance.EC2 instance connect, Session Manager, and an SSH Client,and EC2 Serial Console.
+
+Amazon EC2 instane connect provides a simple and secure way to connet to your linux instance using SSH.With EC2 instane connect,you use AWS Identity  
+and access management policies and principals to control, SSH access to your instances,removing the need to share and managed SSH keys.All connection 
+request using EC2 instance connect are logged to AWS cloudtrail so that you can audit connection requests.
+
+Amazon EC2 connect requires that the EC2 instance security group allows incoming SSH traffic over port 22.
+
+
+
+SubNet:
+Amazon Ec2 instances reside within a subnet.A subnet is a range of IP addresses in your Amazon VPC
+
+Amazon RDS:
+Amazon RDS is a managed service.This means your database administrator can focus on innovating instead of patching and updating their database and 
+infrastructure.
+Amazon RDS is optimized for memory,performance and I/O.With Amazon RDS you only pay for what rresources you actually consume.
+AWS offers several familiar database engines.Amazon Aurora is AWS's lightning fast database solution which is up to 5 times faster than MySQL and three
+times faster than PostgreSQL.Aurora databases are highly secure,available and durable.
+The MySQL,MariaDB,Oracle and PostgreSQL engines allow you to sccale up to 64 TB of storage and SQL Server supports up to 16TB.Storage scaling is on-the-fly
+with zero downtime
+Amazon RDS makes it easy to control network access to your database.Amazon RDS also lets you run your database instances in a VPC,which enables you to
+isolate your database instances and to connect to your existing infrastructure through an industry-standard encrypted IPsec VPN.
+In order for AWS to successfully provision a RDS database instance for you,you must first specify an initial database name. If you fail to specify an
+inital database your instance may still be provisioned but it may not work properly. (In Additional Configuration Section)
+
+
+IAM:
+AWS has a service called Identity and Access Management(IAM), that enables you to create policies that manage AWS users and groups, and use permissions
+to allow and deny access to AWS resources.With AWS IAM, you can manage your security requirements at scale.
+Often a collection of users will require a similar set of permissions.In order to define permissions for multiple users,an AWS IAM group can be used.
+AWS IAM users can be aded to a group and they inherit all the permissions that have be attached to the group.
+
+A user group can contain many users,and a user can belong to multiple user groups.User group can't be nested;they can contain only users,not other user
+groups.There is no default user group that automatically includes all users in the AWS account.If you want to have a user group like that,you must create it
+and assign each new user to it.
+
+A policy is an object in AWS that, when associated with an identity or resource,defines their permissions.AWS evaluates policies every time an AWS IAM
+principal(user or role) makes a request.
+
+An AWS Identity and Access Management user is an entity that you create n AWS to represent the person or application that uses it to interact with AWS.A
+user in AWS consists of a name and credentials.An AWS IAM user with administrator permissions is not the same thing as the AWS account root user.
+
+Disabling the AWS Management Console access password for a user prevents them from signing in the to the AWS Managementt Console using their username an
+password.It does not change their permissions or prevent them from accessing the console using an assumed role.
+
+A user can belong to more than one group.In the event that groups have conflicting policies AWS has a policy evaluation logic.
+
+Users can have tags associated with them.This can help you manage a large amount of users in the future.
+
+For extra security, enable multi-factor authentication(MFA) for all users in your account.With MFA,users hae a device that generates a response to an
+authentication challenge.If a user's password or access keys are compromised,your account resources are still secure because of the additional 
+authentication requirement.
+
+Amazon DynamoDB:
+DynamoDB is serverless with no servers to provision,patch,or manage and no software to install,maintain,or operate.Amazon DynamoDB automatically scales
+tables up and down to adjust for capacity and maintain performance.
+
+Amazon DynamoDB is a NoSQL database,so you don't have to worry about a schema.It automatically scales,and has single-digit millisecond latency!Amazon 
+
+DynamoDB is a key-value and document database that delivers single-digit millisecond performance at any scale.This level of performance addresses the
+low response time.
+
+DynamoDB tables supports two types of primary keys: partition key only or partition key and a sort key.A composite key uses both a partition key and a 
+sort key.In a table that has a partition key and a sort key,it's possible for two items to have the same partiton key value.However, those two items
+must have different sort key values.
+
+When getting a specific item(GetItem operation) you must specify the primary key for the item that you want.You can retrieve the entire item or just a 
+subset of its attributes.With a flexible schema,you can add a new attributes.
+
+DynamoDB supports petabytes of data, and you can add records with unique IDs that have varying attributes to support your metadata needs.
+
+When you create a table, in addition to the table name,you must specify the primary key of the table.The primary key uniquely identifies each item in the
+table, so that no two items can have the same key.
+
+With Amazon DynamoDB, you create items, which are records with attributes that store data.It supports a number of different data types.It can also store 
+attributes that are more complex such as a list.
+
+The Query operation in Amazon DynamoB finds items based on primary key values.You must provide the name of the partiton key attribute and a single value for
+that attribute.Auery returns all items with that partiton key value.Optionally, you can provide a sort key attribute and use a comparison operator to refine
+the search results.
+
+The Scan operation returns one or more items and item attributes by accessing every item in a table or a secondary index.If the total number of scanned 
+items exceeds the maximum dataset size limit of 1MB,the scan stops and results are returned to the user as a LastEvaluatedKey value,to contnue the
+scan in a subsequent operation.THe results also include the number of items exceeding the limit.A scan can result in no table data meeting the filter
+criteria.
+
+
+Amazon Elastic File System(EFS):
+EFS is a simple,serverless,set-and-forget,elastic file system that lets you share file data without provisioning or managing storage.with EFS you can create 
+shared network devices.
+
+EFS is built to scale on demand up to petabytes of storage capacity without disrupting applications.
+
+With Amazon EFS,you can grow and shrink your file systems automatically as you add and remove fiiles,eliminating the need to provision and manage capacity
+to accomodate growth.
+
+EFS creates a shared storage file system available concurrently to multiple instances.
+
+After creating the Amazon EFS file system,you create mount targets on each subnet.The mount target enables communication from instances on the subnet.
+Amazon EFS uses the Network File System(NFSv4) protocol.Instances that connect to the file system are NFS clients.
+
+When you create an Amazon EFS mount target,you must attach a security group.The security group determines which instances can access the file system as
+NFS clients.
+
+Security groups are linked to a single VPC.You can assign a security group to one or more instances,but each instance must be in the same VPC as the
+security group.
+
+EFS file system requires an inbound NFS rule.By selecting a security group as the incoming source,any instances linked to the security group you select
+will have NFS client access to the file system.After the EFS security group has been created,you are prepared to create the file system.
+
+To create Amazon EFS resources such as a file system and access points,a user must have AWS identity and Access Management(IAM) permissions for the 
+corresponding API action and resource.
+
+Amazon EFS offers you the choice of creating file systems using standard or one zone storage classes.Standard storage classes store data within and across
+multiple availability zones(AZ).One zone storage classes store data redundantly within a single AZ,at a 47% lower price than standard,for workloads that
+don't require multi-AZ resilience.
+
+You can disable automatic backups and lifecycle management to reduce costs until you are in production.
+
+By attaching your custom security group to the mount target,you control where the source of incoming traffc to the file system can originate.
+
+After the new file system is available,you can use automatically created commands to mount the file system.once you have the copied the mount command,you
+can connect to your Amazon EC2 instance and mount the file system.
+
+The Amazon EFS clien(amazon-efs-utils) is an open-source collection of Amazon EFS tools.This package is available in the Amazon Linux package repositories,
+and you can build and install the package on other Linux distributions.Installing the utilites makes the mount commands easier to process and troubleshoot.
+
+The Amazon EFS client includes a mount helper and tooling that makes it easier to perform encryption of data in transit for Amazon EFS.
+
+sudo yum install -y amazon-efs-utils
+
+You can mount a file system on compute instances,including Amazon EC2,Amazon ECS,and AWS Lambda in your VPC.
+
+The Network tab in the EFS allows you to display and manage your mount targets.
+
+For Amazon EFS file systems that use Standard storage classes,you can create a mount target in each Availability zone in an AWS region.
+
+You can create mount targets for a file system using the AWS Management console,AWS CLI,or programmatically using the AWS SDKs.When using the console,
+you can create mount targets when you first create a file system or after the file system is created.
+
+In most cases,you will assign the same security group to each mount target.
+
+Each mount target installs an elastic network interface(ENI) into the chosen subnet.An elastic network interface is a logical networking component in a
+VPC that represents a virtual network card.The ENI automatically receives an IP address from the VPC.
+
+Auto-healing and Scaling Applications:
+
+The Auto Scaling service creates group of servers that grow or shrink in capacity depending on demand.
+
+AutoScaling also works directly with Amazon CloudWatch for metrics data and with Elastic Load Balancing to add and remove hosts for load distribution.For
+example,if the web servers are reporting greater than 80 percent CPU utilization over a period of time,an additional web server could be quickly deployed
+and then automatically added to the load balancer.
+
+AWS Auto Scaling monitors your applications and automatically adjusts capacity to maintain steady,predicatble performance at the lowest possible cost.
+
+AWS auto scaling is free to use,and allows you to optimize the costs of your AWS environment.It can help you optimize your utilization and cost efficiencies
+when consuming AWS services so you only pay for the resources you actually need.When demand drops,AWS Auto Scaling will automatically remove any excess
+resource capacity so you avoid overspending.
+
+AWS Auto Scaling continually monitors your applications to make sure that they are operating at your desired performance levels.Using AWS Auto Scaling,you
+maintain optimal application performance and availability,even when workloads are periodic,unpredictable,or continuously changing.
+
+You can capture the contents of an instance and its volume into an Amazon Machine Image(AMI).An AMI is a template used for launching new instances with
+identical configuratons.
+
+By default,Amazon EC2 shuts down the instance,takes snapshots of any attached volumes,creates and registers the AMI,and then reboots the instance.You can
+enable the No reboot option,if you don't want your instance to be shut down.
+
+After you create an AMI,it is only available,by default,within the region of creation.To use the same AMI in another region,you must copy the AMI to the
+other region.
+
+Launch templates enable you to store launch parameters so that you do not have to specfy them every time you launch an instance.For example,a launch template
+can contain the AMI ID,instance type,and network settings that typically use to launch instances.
+
+You are limited to creating 5,000 launch templates per region and 10,000 versions per launch template.For each launch template,you can create one or more 
+numbered launch template versions.The first version specifies the instance type,AMI ID,subnet and key pair to use to launch the instance.
+
+If you plan to access your Amazon EC2 instance through windows or the putty program then you will use .ppk file(private key file format).If you are using a unix-
+based(e.g.Linux,MacOS) shell with OpenSSH then select the .pem format(private key file format while creating key pair).
+
+For Resource tags,specify tags by providing key and value combinations.You can tag the instance,the volumes,Spot instance requests,or all three.For Network
+interfaces,you can specify up to two network interfaces for the instance.
+
+The launch template can be used to configure Auto Scaling and healing propertes of your system.When a server goes down this will be the informaton that is
+used to create a new instance.
+
+AWS Auto Scaling lets you build scaling plans that automate how groups of different resources respond to changes in demand.You can optimize for balance
+between availability and costs.AWS Auto Scaling automatically creates all of the scaling policies and sets targets for you based on your preference.
+
+Amazon EC2 Auto Scaling can determine the health status of an instance using one or more of the following.First is the status checks provided by the 
+Amazon EC2 to identify hardware and software issues that may impair an instance.The second is health checks provided by a load balancer.These can include
+custom health checks.
+
+with target tracking scaling policies,you select a scaling metric(e.g.,CPU Utilization) and set a target value.Amazon EC2 Auto scaling creates and manages
+the Amazon CloudWatch alarms that trigger the scaling policy and calculates the scaling adjustment based on the metric and the target value.
+
+You can be notified when Amazon EC2 Auto Scaling is launching or terminating the Amazon EC2 instances in your Auto Scaling group.You manage notifications
+using Amazon Simple Notification Service(Amazon SNS).
+
+After you create a scaling policy,Amazon EC2 Auto Scaling starts evaluating the policy aganist the metrics you selected.
+
+Scheduled scaling helps you to set up your own scaling schedule according to predictable load changes.For example,lets say that every week the traffic to your
+web application starts to increase based on a predicatble factor,you can configure system to preempt this event.When creating scheduled action by default,
+the times that you set are in coordinated Universal Time(UTC).When specifyng a recurring schedule with a cron expression using the AWS CLI or an SDK,you
+can change the time zone to correspond to your local time zone or a time zone from another part of your Network.
+
+Route 53:
+Amazon Route 53 provides DNS services to simplify domain management.
+
+CloudFront:
+Amazon CloudFront is used to deliver static and dynamic content.It can cache frequently accessed content to decrease latency.
+
+S3:
+Amazon S3 is used to store static assets like images and video
+
+ELB:
+An Amazon Elastic Load Balancer is used to spread traffic across multiple availability zones.Amazon EC2 Auto Scaling groups are deployed for redundancy.
+
+
+Highly available web applications:
+
+1. By placing your web servers in an Amazon EC2 Auto Scaling group behind a load balancer,you can achieve high availability for your application.
+2. Minimum and maximum capacity define boundaries for the number of instances allowed in the Auto Scaling group.The desired capacity is the initial
+capacity of the Auto Scaling group and the capacity it attempts to maintain.
+3.An Auto Scaling group starts by launching enough instances to meet its desired capacity.It maintains this number of instances by performing periodic
+health checks on the instances in the group.
+4.You must specify atleast one Availability zone when you are creating your Auto Scaling group.An Auto Scaling group can be configured across multiple
+availability zones for increased availability.
+5.You define which subnets,from one or more availability zones,are linked to the auto scaling group.This defines where your Amazon EC2 resources linked to
+the auto scaling group can reside.
+6.Attaching a load balancer to your Auto Scaling group registers the group with the load balancer,which acts as a single point of contact for all incoming
+web traffic to your Auto scaling group.
+7.For managing web-based applications requiring HTTPS connectivity,choose the Application Load Balancer.If the web applications are for public access the
+load balancer must be internet-facing.
+8.A load balancer takes requests from clients and distributes them across targets in a target group.After you enable an availability zone,the load balancer
+starts routing requests to the registered targets in that Availability zone.
+9.To customize the traffic flow between the ALB and the web servers you can create new security groups that define what traffic is allowed to the load
+balancer and what traffic is allowed to the web servers behind the load balancer
+10.Security groups are assigned to a VPC.This means the security group can only be assigned to resources within the VPC.
+11.For a public-facing load balancer,you specify 0.0.0.0/0 as a source to accept traffic from any address.By specifying a security group as an outbound
+destination,you can restrict traffic to only be sent to instances associated with the specified security group.
+12.Security groups are not active unless they are assigned to a resource.
+13.To increase security,you can edit the security group in use by Amazon EC2 instances behind the loadbalancer to only allow inbound traffic from the
+Application Load Balancer(ALB).
+14.By removing the 0.0.0.0/0 source and replacing it with a security group,you can easily control which resources are allowed to send traffic to instances
+without having to input adddress ranges.Only traffic from the instances associated with the security group is allowed.
+15.The default ALB health check only validates the root path of an HTTP server.Applications will generally implement a much more robust application health
+check to validate server configuration and external access.You can manually verify that health checks are active on your load balancer.
+16.After your target is registered,it must pass one health check to be considered healthy.After each health check is completed,the load balancer node
+closes the connecton that was established for the health check.
+17.After you have created an internet facing load balancer,you can now run your applications in a private subnet,you can add or remove subnets associated
+with the Auto Scaling group.
+18.If you add or remove a subnet you are defining where the Auto Scaling group resources can reside.
+19.Changing the subnet in Auto Scaling group will not automatically cause instances to rebuild in the Auto Scaling group.Terminating the instance reduces
+the number of instances below the minimum for the auto scaling group and triggers a new instance launch.
+20.You can review Auto Scaling group operations in Activity history.
+21.To take advantage of the safety and reliability of geographic redundancy,span your Auto Scaling group across multiple Availability zones within a Region.
+Attach a load balancer to distribute incoming traffic across the availability zones.
+22.When one az becomes unhealthy or unavailable,Amazon EC2 auto scaling launches new instances in an unaffected az.Auto scaling attempts to launch new
+instances in the az with the fewest instances
+23.The desired capacity is the initial capacity of the Auto scaling group after this operation completes and the capacity it attempts to maintain.Desired
+capacity is what Auto Scaling group changes based on instance performance or other alarm-based actions that you configure.
+24.By changing desired capacity manually,you can test your Auto Scaling group behavior.Increasing the desired capacity,while not exceeding the maximum 
+capacity will launch new instances to meet the desired capacity value.
+25.Connection draning enables the load balancer to complete in-flight requests made to instances that are de-registering or unhealthy before stopping 
+traffic flow from the load balancer.
+26.When Auto Scaling launches a new instance,you can verify the subnet ID to ensure that your instance was deployed to the correct subnet.
