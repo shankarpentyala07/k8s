@@ -10,5 +10,10 @@ kubectl create deployment --image=nginx nginx
 Generate Deployment YAML file:
 kubectl create deployment --image=nginx nginx --replicas=4 --dry-run=client -o yaml > nginx-deployment.yaml
 
+Scale replicaset:
+kubectl scale rs --replicas=4 nginx
+
+
+
 
 
