@@ -16,6 +16,10 @@ kubectl scale rs --replicas=4 nginx
 To explain a specific resource:
 Ex: kubectl explain replicaset
 
+To view all the resources at once:
+kubectl get all
+
+
 
 
 
