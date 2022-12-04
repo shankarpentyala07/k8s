@@ -13,6 +13,9 @@ kubectl create deployment --image=nginx nginx --replicas=4 --dry-run=client -o y
 Scale replicaset:
 kubectl scale rs --replicas=4 nginx
 
+To explain a specific resource:
+Ex: kubectl explain replicaset
+
 
 
 
