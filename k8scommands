@@ -5,6 +5,7 @@ Generate pod manifest yaml:
  kubectl run nginx --image=nginx --dry-run=client -o yaml > nginx.yaml
  
 Create a deployment:
+kubectl create deployment --help
 kubectl create deployment --image=nginx nginx
 
 Generate Deployment YAML file:
