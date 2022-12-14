@@ -20,6 +20,13 @@ Ex: kubectl explain replicaset
 To view all the resources at once:
 kubectl get all
 
+Connecting Services:
+Within NameSpace: 
+mysql.connect("service-name")
+
+To a different NameSpace"
+mysql.connect("service-name.namespace.svc.cluster.local")
+
 
 
 
