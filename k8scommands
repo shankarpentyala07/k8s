@@ -33,7 +33,9 @@ To set k8s context to a specifc namespace:
 kubectl config set-context $(kubectl config current-context) --namespace=<specific-namespace>
 
 
-
+To check access:
+kubectl auth can-i create deployments
+kubectl auth can-i delete nodes
 
 
 
