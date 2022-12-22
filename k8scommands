@@ -49,3 +49,8 @@ kubectl api-resources --namespaced=true
 To view cluster scoped resources:
 kubectl api-resources --namespaced=false
 
+To view output without headers:
+kubectl get clusterroles --no-headers | wc -l
+
+kubectl get clusterroles --no-headers -o json | jq '.items | length'
+
